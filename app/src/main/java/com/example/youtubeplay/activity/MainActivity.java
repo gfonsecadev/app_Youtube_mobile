@@ -1,16 +1,19 @@
 package com.example.youtubeplay.activity;
 
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.SearchView;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
+
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
+import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.youtubeplay.R;
 import com.example.youtubeplay.adapter.AdapterVideo;
@@ -28,9 +31,9 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
-public class MainActivity extends AppCompatActivity{
+public class MainActivity extends AppCompatActivity {
 
-    private List<Items> listVideo=new ArrayList<>();
+    private List<Items> listVideo = new ArrayList<>();
     private RecyclerView recyclerView;
 
     private Retrofit retrofit;
@@ -40,16 +43,14 @@ public class MainActivity extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Toolbar toolbar = findViewById(R.id.mainToolbar);
+        toolbar.setTitle("");
+        setSupportActionBar(toolbar);
+        recyclerView = findViewById(R.id.recyclerVideos);
 
-
-        recyclerView=findViewById(R.id.recyclerVideos);
-        getSupportActionBar().setTitle("YouTube");
-        retrofit= RetrofitDados.getRetrofit();
+        retrofit = RetrofitDados.getRetrofit();
 
         carregarListaVideos("");
-
-
-
 
 
     }
@@ -57,10 +58,11 @@ public class MainActivity extends AppCompatActivity{
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
-        getMenuInflater().inflate(R.menu.menu_search,menu);
-         SearchView searchView= (SearchView) menu.findItem(R.id.search_menu).getActionView();
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.menu_search, menu);
 
-        
+        MenuItem menuItem = menu.findItem(R.id.search);
+        SearchView searchView = (SearchView) menuItem.getActionView();
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -88,34 +90,31 @@ public class MainActivity extends AppCompatActivity{
         searchView.setOnCloseListener(new SearchView.OnCloseListener() {
             @Override
             public boolean onClose() {
-               //searchView.setBackgroundColor(getColor(R.color.red));
+                //searchView.setBackgroundColor(getColor(R.color.red));
                 carregarListaVideos("");
                 return false;
             }
         });
 
 
-
-
-
         return super.onCreateOptionsMenu(menu);
     }
 
-    public void carregarListaVideos(String pesquisa){
+    public void carregarListaVideos(String pesquisa) {
 
-        String q=pesquisa.replaceAll(" ","+");
-        ConsultaRetrofit consultaRetrofit=retrofit.create(ConsultaRetrofit.class);
+        String q = pesquisa.replaceAll(" ", "+");
+        ConsultaRetrofit consultaRetrofit = retrofit.create(ConsultaRetrofit.class);
 
-        consultaRetrofit.getRetrofit("snippet",ApiDados.CANAL_ID,"20","date",ApiDados.API_KEY,q).enqueue(new Callback<Resultado>() {
+        consultaRetrofit.getRetrofit("snippet", ApiDados.CANAL_ID, "20", "date", ApiDados.API_KEY, q).enqueue(new Callback<Resultado>() {
             @Override
             public void onResponse(Call<Resultado> call, Response<Resultado> response) {
-                if (response.isSuccessful()){
-                    listVideo=response.body().items;
+                if (response.isSuccessful()) {
+                    listVideo = response.body().items;
                     carregarRecycler();
-                    Log.d("resposta","resposta: "+response.toString());
 
-                } else if (response.code()==403)  {
-                    AlertDialog.Builder alertDialog=new AlertDialog.Builder(MainActivity.this);
+
+                } else if (response.code() == 403) {
+                    AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this);
                     alertDialog.setTitle("Erro 403: ");
                     alertDialog.setMessage("Cota diaria de acesso a API do Youtube excedida.Volte amanhã!").create();
                     alertDialog.setCancelable(false);
@@ -130,23 +129,21 @@ public class MainActivity extends AppCompatActivity{
                 }
 
 
-
             }
 
             @Override
             public void onFailure(Call<Resultado> call, Throwable t) {
-                Log.d("reposta","Deu erro aqui:"+t.getMessage());
+                Log.d("reSpota", "Deu erro aqui:" + t.getMessage());
 
 
             }
         });
 
 
-
     }
 
-    public void carregarRecycler(){
-        AdapterVideo videoAdapter=new AdapterVideo(listVideo,this);
+    public void carregarRecycler() {
+        AdapterVideo videoAdapter = new AdapterVideo(listVideo, this);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this));
         recyclerView.setHasFixedSize(true);

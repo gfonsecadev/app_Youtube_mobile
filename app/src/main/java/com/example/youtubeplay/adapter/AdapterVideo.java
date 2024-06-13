@@ -12,7 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.youtubeplay.R;
-import com.example.youtubeplay.activity.YoutubeActivity;
+import com.example.youtubeplay.activity.YoutubeActivety;
 import com.example.youtubeplay.model.Items;
 import com.squareup.picasso.Picasso;
 
@@ -30,21 +30,21 @@ public class AdapterVideo extends RecyclerView.Adapter<AdapterVideo.HolderVideo>
     @NonNull
     @Override
     public HolderVideo onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view= LayoutInflater.from(context).inflate(R.layout.layout_recycler_video,parent,false);
+        View view = LayoutInflater.from(context).inflate(R.layout.layout_recycler_video, parent, false);
 
         return new AdapterVideo.HolderVideo(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull HolderVideo holder, int position) {
-        Items videos=videosList.get(position);
+        Items videos = videosList.get(position);
         holder.titulo.setText(videos.snippet.title);
         Picasso.get().load(videos.snippet.thumbnails.high.url).into(holder.capaVideo);
         holder.capaVideo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent=new Intent(context, YoutubeActivity.class);
-                intent.putExtra("idVideo",videos.id.videoId);
+                Intent intent = new Intent(context, YoutubeActivety.class);
+                intent.putExtra("idVideo", videos.id.videoId);
                 context.startActivity(intent);
             }
         });
@@ -61,9 +61,8 @@ public class AdapterVideo extends RecyclerView.Adapter<AdapterVideo.HolderVideo>
 
         public HolderVideo(@NonNull View itemView) {
             super(itemView);
-            titulo=itemView.findViewById(R.id.textTitulo);
-            capaVideo=itemView.findViewById(R.id.imageCapa);
-
+            titulo = itemView.findViewById(R.id.textTitulo);
+            capaVideo = itemView.findViewById(R.id.imageCapa);
 
 
         }

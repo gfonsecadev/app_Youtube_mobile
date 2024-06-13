@@ -14,7 +14,7 @@
         android:theme="@style/Theme.YoutubePlay"
         tools:targetApi="31">
         <activity
-            android:name=".activity.YoutubeActivity"
+            android:name=".activity.YoutubeActivety"
             android:exported="false" />
         <activity
             android:name=".activity.MainActivity"
