@@ -14,13 +14,24 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        //crie um objeto Properties
+        Properties properties = new Properties()
+        //carregue o arquivo local.properties contém os dados a recuperar no objetos criado utilizando project.rootProject.file
+        properties.load(project.rootProject.file("local.properties").newDataInputStream())
+//      crie um campo buildConfig que recebe o tipo do dado, o nome a ser acessado e o caminho.
+        buildConfigField "String", "API_KEY_YOUTUBE", "\"${properties.getProperty("API_YOUTUBE")}\""
+
     }
+
+
 
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
